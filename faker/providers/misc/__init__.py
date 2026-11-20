@@ -392,17 +392,17 @@ class Provider(BaseProvider):
         self._validate_archive_parameters(uncompressed_size, num_files, min_file_size)
 
         if compression in ["bzip2", "bz2"]:
-            compression_ = zipfile.ZIP_BZIP2
+            zip_compression_method = zipfile.ZIP_BZIP2
         elif compression in ["lzma", "xz"]:
-            compression_ = zipfile.ZIP_LZMA
+            zip_compression_method = zipfile.ZIP_LZMA
         elif compression in ["deflate", "gzip", "gz"]:
-            compression_ = zipfile.ZIP_DEFLATED
+            zip_compression_method = zipfile.ZIP_DEFLATED
         else:
-            compression_ = zipfile.ZIP_STORED
+            zip_compression_method = zipfile.ZIP_STORED
 
         zip_buffer = io.BytesIO()
         remaining_size = uncompressed_size
-        with zipfile.ZipFile(zip_buffer, mode="w", compression=compression_) as zip_handle:
+        with zipfile.ZipFile(zip_buffer, mode="w", compression=zip_compression_method) as zip_handle:
             for file_number in range(1, num_files + 1):
                 filename = self.generator.pystr() + str(file_number)
 
