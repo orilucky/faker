@@ -341,6 +341,28 @@ class Provider(BaseProvider):
 
         return "".join(chars)
 
+    def _validate_archive_parameters(
+        self,
+        uncompressed_size: int,
+        num_files: int,
+        min_file_size: int,
+    ) -> None:
+        """Validate file counts and sizes for archive generation."""
+        if any(
+            [
+                not isinstance(num_files, int) or num_files <= 0,
+                not isinstance(min_file_size, int) or min_file_size <= 0,
+                not isinstance(uncompressed_size, int) or uncompressed_size <= 0,
+            ]
+        ):
+            raise ValueError(
+                "`num_files`, `min_file_size`, and `uncompressed_size` must be positive integers",
+            )
+        if min_file_size * num_files > uncompressed_size:
+            raise AssertionError(
+                "`uncompressed_size` is smaller than the calculated minimum required size",
+            )
+
     def zip(
         self,
         uncompressed_size: int = 65536,
@@ -367,20 +389,8 @@ class Provider(BaseProvider):
         :sample: uncompressed_size=256, num_files=4, min_file_size=32
         :sample: uncompressed_size=256, num_files=32, min_file_size=4, compression='bz2'
         """
-        if any(
-            [
-                not isinstance(num_files, int) or num_files <= 0,
-                not isinstance(min_file_size, int) or min_file_size <= 0,
-                not isinstance(uncompressed_size, int) or uncompressed_size <= 0,
-            ]
-        ):
-            raise ValueError(
-                "`num_files`, `min_file_size`, and `uncompressed_size` must be positive integers",
-            )
-        if min_file_size * num_files > uncompressed_size:
-            raise AssertionError(
-                "`uncompressed_size` is smaller than the calculated minimum required size",
-            )
+        self._validate_archive_parameters(uncompressed_size, num_files, min_file_size)
+
         if compression in ["bzip2", "bz2"]:
             compression_ = zipfile.ZIP_BZIP2
         elif compression in ["lzma", "xz"]:
@@ -433,20 +443,8 @@ class Provider(BaseProvider):
         :sample: uncompressed_size=256, num_files=4, min_file_size=32
         :sample: uncompressed_size=256, num_files=32, min_file_size=4, compression='bz2'
         """
-        if any(
-            [
-                not isinstance(num_files, int) or num_files <= 0,
-                not isinstance(min_file_size, int) or min_file_size <= 0,
-                not isinstance(uncompressed_size, int) or uncompressed_size <= 0,
-            ]
-        ):
-            raise ValueError(
-                "`num_files`, `min_file_size`, and `uncompressed_size` must be positive integers",
-            )
-        if min_file_size * num_files > uncompressed_size:
-            raise AssertionError(
-                "`uncompressed_size` is smaller than the calculated minimum required size",
-            )
+        self._validate_archive_parameters(uncompressed_size, num_files, min_file_size)
+
         mode: Literal["w|", "w|gz", "w|bz2", "w|xz"] = "w|"
         if compression in ["gzip", "gz"]:
             mode = "w|gz"
