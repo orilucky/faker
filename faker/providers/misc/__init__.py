@@ -406,7 +406,8 @@ class Provider(BaseProvider):
             for file_number in range(1, num_files + 1):
                 filename = self.generator.pystr() + str(file_number)
 
-                max_allowed_size = remaining_size - (num_files - file_number) * min_file_size
+                reserved_for_remaining_files = (num_files - file_number) * min_file_size
+                max_allowed_size = remaining_size - reserved_for_remaining_files
                 if file_number < num_files:
                     file_size = self.generator.random.randint(min_file_size, max_allowed_size)
                     remaining_size = remaining_size - file_size
@@ -460,7 +461,8 @@ class Provider(BaseProvider):
                 file_buffer = io.BytesIO()
                 filename = self.generator.pystr() + str(file_number)
 
-                max_allowed_size = remaining_size - (num_files - file_number) * min_file_size
+                reserved_for_remaining_files = (num_files - file_number) * min_file_size
+                max_allowed_size = remaining_size - reserved_for_remaining_files
                 if file_number < num_files:
                     file_size = self.generator.random.randint(min_file_size, max_allowed_size)
                     remaining_size = remaining_size - file_size
