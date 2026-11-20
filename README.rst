@@ -18,6 +18,17 @@ Faker is heavily inspired by `PHP Faker`_, `Perl Faker`_, and by `Ruby Faker`_.
 |pypi| |build| |coverage| |license|
 
 ----
+Building from source
+--------------------
+
+With a Python 3.11 virtual environment active, run these commands from
+the directory containing this README::
+
+    python -m pip install build
+    python -m build
+
+The source archive (``.tar.gz``) and wheel (``.whl``) are written to
+the ``dist/`` directory.
 
 Compatibility
 -------------
